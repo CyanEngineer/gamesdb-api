@@ -7,6 +7,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,30 +29,41 @@ public class GameController {
     }
 
     @GetMapping("/games")
-    CollectionModel<EntityModel<Game>> all() {
+    ResponseEntity<CollectionModel<EntityModel<Game>>> all() {
         List<EntityModel<Game>> games = repository.findAll().stream()
             .map(assembler::toModel)
             .collect(Collectors.toList());
 
-        return CollectionModel.of(games, linkTo(methodOn(GameController.class).all()).withSelfRel());
+        CollectionModel<EntityModel<Game>> collectionModel = CollectionModel
+            .of(games, linkTo(methodOn(GameController.class).all()).withSelfRel());
+
+        return ResponseEntity
+            .ok(collectionModel);
     }
 
     @PostMapping("/games")
-    EntityModel<Game> newGame(@RequestBody Game newGame) {
-        Game savedGame = repository.save(newGame);
-        return assembler.toModel(savedGame);
+    ResponseEntity<EntityModel<Game>> newGame(@RequestBody Game newGame) {
+        EntityModel<Game> entityModel = assembler.toModel(repository.save(newGame));
+        
+        return ResponseEntity
+            .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+            .body(entityModel);
     }
 
     @GetMapping("/games/{id}")
-    EntityModel<Game> one(@PathVariable Long id) {
+    ResponseEntity<EntityModel<Game>> one(@PathVariable Long id) {
         Game game = repository.findById(id).orElseThrow(
             () -> {return new GameNotFoundException(id);}
         );
-        return assembler.toModel(game);
+
+        EntityModel<Game> entityModel = assembler.toModel(game);
+
+        return ResponseEntity
+            .ok(entityModel);
     }
 
     @PutMapping("/games/{id}")
-    EntityModel<Game> replaceGame(@RequestBody Game newGame, @PathVariable Long id) {
+    ResponseEntity<EntityModel<Game>> replaceGame(@RequestBody Game newGame, @PathVariable Long id) {
         Game updatedGame = repository.findById(id).map(
             game -> {
                 game.update(newGame);
@@ -60,11 +73,18 @@ public class GameController {
         .orElseGet(
             () -> {return repository.save(newGame);}
         );
-        return assembler.toModel(updatedGame);
+
+        EntityModel<Game> entityModel = assembler.toModel(updatedGame);
+
+        return ResponseEntity
+            .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+            .body(entityModel);
     }
 
     @DeleteMapping("/games/{id}")
-    void deleteGame(@PathVariable Long id) {
+    ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         repository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
