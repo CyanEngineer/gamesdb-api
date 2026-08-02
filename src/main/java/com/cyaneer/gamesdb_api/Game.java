@@ -58,6 +58,12 @@ public class Game {
         this.console = console;
     }
 
+    public void update(Game newGame) {
+        this.setTitle(newGame.getTitle());
+        this.setStatus(newGame.getStatus());
+        this.setConsole(newGame.getConsole());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

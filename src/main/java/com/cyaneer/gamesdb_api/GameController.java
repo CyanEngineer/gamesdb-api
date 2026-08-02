@@ -53,9 +53,7 @@ public class GameController {
     EntityModel<Game> replaceGame(@RequestBody Game newGame, @PathVariable Long id) {
         Game updatedGame = repository.findById(id).map(
             game -> {
-                game.setTitle(newGame.getTitle());
-                game.setStatus(newGame.getStatus());
-                game.setConsole(newGame.getConsole());
+                game.update(newGame);
                 return repository.save(game);
             }
         )
