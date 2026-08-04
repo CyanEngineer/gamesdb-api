@@ -1,4 +1,4 @@
-package com.cyaneer.gamesdb_api;
+package com.cyaneer.gamesdb_api.game;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
