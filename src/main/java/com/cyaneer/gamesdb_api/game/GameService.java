@@ -49,6 +49,16 @@ public class GameService {
         gameRepository.deleteById(id);
     }
 
+    public GameResponse mapToResponse(Game game) {
+        return new GameResponse(
+            game.getId(), 
+            game.getTitle(), 
+            game.getStatus().getId(), 
+            game.getStatus().getName(), 
+            game.getConsole()
+        );
+    }
+
     private Game findGameById(Long id) {
         return gameRepository.findById(id)
             .orElseThrow(() -> new GameNotFoundException(id));

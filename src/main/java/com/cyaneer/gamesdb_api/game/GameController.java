@@ -21,22 +21,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class GameController {
     
     private final GameService service;
-    private final GameModelAssembler assembler;
+    private final GameResponseModelAssembler responseAssembler;
 
-    GameController(GameService service, GameModelAssembler assembler) {
+    GameController(GameService service, GameResponseModelAssembler responseAssembler) {
         this.service = service;
-        this.assembler = assembler;
+        this.responseAssembler = responseAssembler;
     }
 
     @GetMapping("/games")
-    ResponseEntity<CollectionModel<EntityModel<Game>>> all() {
+    ResponseEntity<CollectionModel<EntityModel<GameResponse>>> all() {
         List<Game> games = service.getAllGames();
 
-        List<EntityModel<Game>> entityModels = games.stream()
-            .map(assembler::toModel)
+        List<EntityModel<GameResponse>> entityModels = games.stream()
+            .map(service::mapToResponse)
+            .map(responseAssembler::toModel)
             .collect(Collectors.toList());
 
-        CollectionModel<EntityModel<Game>> collectionModel = CollectionModel
+        CollectionModel<EntityModel<GameResponse>> collectionModel = CollectionModel
             .of(entityModels, linkTo(methodOn(GameController.class).all()).withSelfRel());
 
         return ResponseEntity
@@ -44,9 +45,9 @@ public class GameController {
     }
 
     @PostMapping("/games")
-    ResponseEntity<EntityModel<Game>> newGame(@RequestBody GameDTO dto) {
-        Game game = service.createGame(dto);
-        EntityModel<Game> entityModel = assembler.toModel(game);
+    ResponseEntity<EntityModel<GameResponse>> newGame(@RequestBody GameDTO dto) {
+        GameResponse gameResponse = service.mapToResponse(service.createGame(dto));
+        EntityModel<GameResponse> entityModel = responseAssembler.toModel(gameResponse);
         
         return ResponseEntity
             .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -54,18 +55,18 @@ public class GameController {
     }
 
     @GetMapping("/games/{id}")
-    ResponseEntity<EntityModel<Game>> one(@PathVariable Long id) {
-        Game game = service.getGame(id);
-        EntityModel<Game> entityModel = assembler.toModel(game);
+    ResponseEntity<EntityModel<GameResponse>> one(@PathVariable Long id) {
+        GameResponse gameResponse = service.mapToResponse(service.getGame(id));
+        EntityModel<GameResponse> entityModel = responseAssembler.toModel(gameResponse);
 
         return ResponseEntity
             .ok(entityModel);
     }
 
     @PutMapping("/games/{id}")
-    ResponseEntity<EntityModel<Game>> replaceGame(@RequestBody GameDTO dto, @PathVariable Long id) {
-        Game updatedGame = service.updateGame(id, dto);
-        EntityModel<Game> entityModel = assembler.toModel(updatedGame);
+    ResponseEntity<EntityModel<GameResponse>> replaceGame(@RequestBody GameDTO dto, @PathVariable Long id) {
+        GameResponse updatedGame = service.mapToResponse(service.updateGame(id, dto));
+        EntityModel<GameResponse> entityModel = responseAssembler.toModel(updatedGame);
 
         return ResponseEntity
             .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())

@@ -21,15 +21,16 @@ RESTful API for games I have played or want to play
 ### Games (object)
 - Fields:
   - ~~`Title` (string)~~
-  - `Status` (object?)
+  - ~~`Status` (object?)~~
   - `Console` (object)
   - `Score` (double)
   - `Sorting name` (string)
   - `Artwork`? (image/link?)
 - ~~CRUD~~
-### Status (object/enum)
-- I'm leaning towards object, just to make it flexible
-- CRUD
+### Status (object)
+- ~~I'm leaning towards object, just to make it flexible~~
+- ~~CRUD~~
+- Return StatusResponse for good measure
 ### Console (object)
 - Needs to be flexible since there will keep coming new consoles
 - CRUD
