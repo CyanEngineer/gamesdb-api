@@ -24,25 +24,21 @@ public class GameService {
     }
 
     public Game getGame(Long id) {
-        return gameRepository.findById(id)
-            .orElseThrow(() -> new GameNotFoundException(id));
+        return findGameById(id);
     }
 
     @Transactional
     public Game createGame(GameDTO dto) {
-        Status status = statusRepository.findById(dto.getStatusId())
-            .orElseThrow(() -> new StatusNotFoundException(dto.getStatusId()));
-        
+        Status status = findStatusById(dto.getStatusId());
         Game game = new Game(dto.getTitle(), status, dto.getConsole());
+
         return gameRepository.save(game);
     }
 
     @Transactional
     public Game updateGame(Long id, GameDTO dto) {
-        Status status = statusRepository.findById(dto.getStatusId())
-            .orElseThrow(() -> new StatusNotFoundException(dto.getStatusId()));
-        Game game = gameRepository.findById(id)
-            .orElseThrow(() -> new GameNotFoundException(id));
+        Status status = findStatusById(id);
+        Game game = findGameById(id);
         game.update(dto.getTitle(), status, dto.getConsole());
 
         return gameRepository.save(game);
@@ -51,5 +47,15 @@ public class GameService {
     @Transactional
     public void deleteGame(Long id) {
         gameRepository.deleteById(id);
+    }
+
+    private Game findGameById(Long id) {
+        return gameRepository.findById(id)
+            .orElseThrow(() -> new GameNotFoundException(id));
+    }
+
+    private Status findStatusById(Long id) {
+        return statusRepository.findById(id)
+            .orElseThrow(() -> new StatusNotFoundException(id));
     }
 }
