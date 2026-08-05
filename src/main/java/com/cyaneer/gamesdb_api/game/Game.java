@@ -2,9 +2,12 @@ package com.cyaneer.gamesdb_api.game;
 
 import java.util.Objects;
 
+import com.cyaneer.gamesdb_api.status.Status;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Game {
@@ -13,14 +16,17 @@ public class Game {
     @GeneratedValue Long id;
 
     private String title;
-    private String status;
+
+    @ManyToOne
+    private Status status;
+
     private String console; //TODO: Table for consoles
 
     Game() {
 
     }
 
-    Game(String title, String status, String console) {
+    Game(String title, Status status, String console) {
         this.title = title;
         this.status = status;
         this.console = console;
@@ -42,11 +48,11 @@ public class Game {
         this.title = title;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -62,6 +68,12 @@ public class Game {
         this.setTitle(newGame.getTitle());
         this.setStatus(newGame.getStatus());
         this.setConsole(newGame.getConsole());
+    }
+
+    public void update(String title, Status status, String console) {
+        this.setTitle(title);
+        this.setStatus(status);
+        this.setConsole(console);
     }
 
     @Override

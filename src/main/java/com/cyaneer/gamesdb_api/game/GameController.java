@@ -20,30 +20,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GameController {
     
-    private final GameRepository repository;
+    private final GameService service;
     private final GameModelAssembler assembler;
 
-    GameController(GameRepository repository, GameModelAssembler assembler) {
-        this.repository = repository;
+    GameController(GameService service, GameModelAssembler assembler) {
+        this.service = service;
         this.assembler = assembler;
     }
 
     @GetMapping("/games")
     ResponseEntity<CollectionModel<EntityModel<Game>>> all() {
-        List<EntityModel<Game>> games = repository.findAll().stream()
+        List<Game> games = service.getAllGames();
+
+        List<EntityModel<Game>> entityModels = games.stream()
             .map(assembler::toModel)
             .collect(Collectors.toList());
 
         CollectionModel<EntityModel<Game>> collectionModel = CollectionModel
-            .of(games, linkTo(methodOn(GameController.class).all()).withSelfRel());
+            .of(entityModels, linkTo(methodOn(GameController.class).all()).withSelfRel());
 
         return ResponseEntity
             .ok(collectionModel);
     }
 
     @PostMapping("/games")
-    ResponseEntity<EntityModel<Game>> newGame(@RequestBody Game newGame) {
-        EntityModel<Game> entityModel = assembler.toModel(repository.save(newGame));
+    ResponseEntity<EntityModel<Game>> newGame(@RequestBody GameDTO dto) {
+        Game game = service.createGame(dto);
+        EntityModel<Game> entityModel = assembler.toModel(game);
         
         return ResponseEntity
             .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -52,10 +55,7 @@ public class GameController {
 
     @GetMapping("/games/{id}")
     ResponseEntity<EntityModel<Game>> one(@PathVariable Long id) {
-        Game game = repository.findById(id).orElseThrow(
-            () -> {return new GameNotFoundException(id);}
-        );
-
+        Game game = service.getGame(id);
         EntityModel<Game> entityModel = assembler.toModel(game);
 
         return ResponseEntity
@@ -63,17 +63,8 @@ public class GameController {
     }
 
     @PutMapping("/games/{id}")
-    ResponseEntity<EntityModel<Game>> replaceGame(@RequestBody Game newGame, @PathVariable Long id) {
-        Game updatedGame = repository.findById(id).map(
-            game -> {
-                game.update(newGame);
-                return repository.save(game);
-            }
-        )
-        .orElseGet(
-            () -> {return repository.save(newGame);}
-        );
-
+    ResponseEntity<EntityModel<Game>> replaceGame(@RequestBody GameDTO dto, @PathVariable Long id) {
+        Game updatedGame = service.updateGame(id, dto);
         EntityModel<Game> entityModel = assembler.toModel(updatedGame);
 
         return ResponseEntity
@@ -83,7 +74,7 @@ public class GameController {
 
     @DeleteMapping("/games/{id}")
     ResponseEntity<Void> deleteGame(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deleteGame(id);
 
         return ResponseEntity.noContent().build();
     }
