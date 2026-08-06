@@ -36,8 +36,8 @@ public class Status {
         this.name = name;
     }
 
-    public void update(Status newStatus) {
-        this.setName(newStatus.name);
+    public void update(String name) {
+        this.setName(name);
     }
 
     @Override

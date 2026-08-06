@@ -21,17 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class StatusController {
     
-    private final StatusRepository repository;
+    private final StatusService service;
     private final StatusModelAssembler assembler;
 
-    StatusController(StatusRepository repository, StatusModelAssembler assembler) {
-        this.repository = repository;
+    StatusController(StatusService service, StatusModelAssembler assembler) {
+        this.service = service;
         this.assembler = assembler;
     }
 
     @GetMapping("/statuses")
     ResponseEntity<CollectionModel<EntityModel<Status>>> all() {
-        List<EntityModel<Status>> statuses = repository.findAll().stream()
+        List<EntityModel<Status>> statuses = service.getAllStatuses().stream()
             .map(assembler::toModel)
             .collect(Collectors.toList());
         
@@ -42,8 +42,9 @@ public class StatusController {
     }
 
     @PostMapping("/statuses")
-    ResponseEntity<EntityModel<Status>> newStatus(@RequestBody Status newStatus) {
-        EntityModel<Status> entityModel = assembler.toModel(repository.save(newStatus));
+    ResponseEntity<EntityModel<Status>> newStatus(@RequestBody StatusDTO dto) {
+        Status status = service.createNewStatus(dto);
+        EntityModel<Status> entityModel = assembler.toModel(status);
 
         return ResponseEntity
             .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -52,10 +53,7 @@ public class StatusController {
 
     @GetMapping("/statuses/{id}")
     ResponseEntity<EntityModel<Status>> one(@PathVariable Long id) {
-        Status status = repository.findById(id).orElseThrow(
-            () -> {return new StatusNotFoundException(id);}
-        );
-
+        Status status = service.getStatus(id);
         EntityModel<Status> entityModel = assembler.toModel(status);
 
         return ResponseEntity
@@ -63,16 +61,8 @@ public class StatusController {
     }
 
     @PutMapping("/statuses/{id}")
-    ResponseEntity<EntityModel<Status>> replaceStatus(@RequestBody Status newStatus, @PathVariable Long id) {
-        Status updatedStatus = repository.findById(id).map(
-            status -> {
-                status.update(newStatus);
-                return repository.save(status);
-            }
-        ).orElseThrow(
-            () -> {return new StatusNotFoundException(id);}
-        );
-
+    ResponseEntity<EntityModel<Status>> replaceStatus(@RequestBody StatusDTO dto, @PathVariable Long id) {
+        Status updatedStatus = service.updateStatus(id, dto);
         EntityModel<Status> entityModel = assembler.toModel(updatedStatus);
 
         return ResponseEntity
@@ -82,7 +72,7 @@ public class StatusController {
 
     @DeleteMapping("/statuses/{id}")
     ResponseEntity<EntityModel<Status>> deleteStatus(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deleteStatus(id);
 
         return ResponseEntity.noContent().build();
     }
