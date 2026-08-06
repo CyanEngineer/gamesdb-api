@@ -30,7 +30,7 @@ RESTful API for games I have played or want to play
 ### Status (object)
 - ~~I'm leaning towards object, just to make it flexible~~
 - ~~CRUD~~
-- Return StatusResponse for good measure
+- ~~Return StatusResponse for good measure~~
 ### Console (object)
 - Needs to be flexible since there will keep coming new consoles
 - CRUD

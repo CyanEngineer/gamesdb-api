@@ -42,6 +42,13 @@ public class StatusService {
         repository.deleteById(id);
     }
 
+    public StatusResponse mapToResponse(Status status) {
+        return new StatusResponse(
+            status.getId(),
+            status.getName()
+        );
+    }
+
     private Status findById(Long id) {
         return repository.findById(id)
             .orElseThrow(() -> new StatusNotFoundException(id));

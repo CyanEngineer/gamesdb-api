@@ -22,29 +22,30 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatusController {
     
     private final StatusService service;
-    private final StatusModelAssembler assembler;
+    private final StatusResponseModelAssembler responseAssembler;
 
-    StatusController(StatusService service, StatusModelAssembler assembler) {
+    StatusController(StatusService service, StatusResponseModelAssembler assembler) {
         this.service = service;
-        this.assembler = assembler;
+        this.responseAssembler = assembler;
     }
 
     @GetMapping("/statuses")
-    ResponseEntity<CollectionModel<EntityModel<Status>>> all() {
-        List<EntityModel<Status>> statuses = service.getAllStatuses().stream()
-            .map(assembler::toModel)
+    ResponseEntity<CollectionModel<EntityModel<StatusResponse>>> all() {
+        List<EntityModel<StatusResponse>> statuses = service.getAllStatuses().stream()
+            .map(service::mapToResponse)
+            .map(responseAssembler::toModel)
             .collect(Collectors.toList());
         
-        CollectionModel<EntityModel<Status>> collectionModel = CollectionModel
+        CollectionModel<EntityModel<StatusResponse>> collectionModel = CollectionModel
             .of(statuses, linkTo(methodOn(StatusController.class).all()).withSelfRel());
         
         return ResponseEntity.ok(collectionModel);
     }
 
     @PostMapping("/statuses")
-    ResponseEntity<EntityModel<Status>> newStatus(@RequestBody StatusDTO dto) {
-        Status status = service.createNewStatus(dto);
-        EntityModel<Status> entityModel = assembler.toModel(status);
+    ResponseEntity<EntityModel<StatusResponse>> newStatus(@RequestBody StatusDTO dto) {
+        StatusResponse statusResponse = service.mapToResponse(service.createNewStatus(dto));
+        EntityModel<StatusResponse> entityModel = responseAssembler.toModel(statusResponse);
 
         return ResponseEntity
             .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -52,18 +53,18 @@ public class StatusController {
     }
 
     @GetMapping("/statuses/{id}")
-    ResponseEntity<EntityModel<Status>> one(@PathVariable Long id) {
-        Status status = service.getStatus(id);
-        EntityModel<Status> entityModel = assembler.toModel(status);
+    ResponseEntity<EntityModel<StatusResponse>> one(@PathVariable Long id) {
+        StatusResponse statusResponse = service.mapToResponse(service.getStatus(id));
+        EntityModel<StatusResponse> entityModel = responseAssembler.toModel(statusResponse);
 
         return ResponseEntity
             .ok(entityModel);
     }
 
     @PutMapping("/statuses/{id}")
-    ResponseEntity<EntityModel<Status>> replaceStatus(@RequestBody StatusDTO dto, @PathVariable Long id) {
-        Status updatedStatus = service.updateStatus(id, dto);
-        EntityModel<Status> entityModel = assembler.toModel(updatedStatus);
+    ResponseEntity<EntityModel<StatusResponse>> replaceStatus(@RequestBody StatusDTO dto, @PathVariable Long id) {
+        StatusResponse updatedStatus = service.mapToResponse(service.updateStatus(id, dto));
+        EntityModel<StatusResponse> entityModel = responseAssembler.toModel(updatedStatus);
 
         return ResponseEntity
             .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())

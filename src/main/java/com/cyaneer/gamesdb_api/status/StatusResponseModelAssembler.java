@@ -8,10 +8,10 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StatusModelAssembler implements RepresentationModelAssembler<Status, EntityModel<Status>> {
+public class StatusResponseModelAssembler implements RepresentationModelAssembler<StatusResponse, EntityModel<StatusResponse>> {
     
     @Override
-    public EntityModel<Status> toModel(Status status) {
+    public EntityModel<StatusResponse> toModel(StatusResponse status) {
         return EntityModel.of(status,
             linkTo(methodOn(StatusController.class).one(status.getId())).withSelfRel(),
             linkTo(methodOn(StatusController.class).all()).withRel("statuses")
