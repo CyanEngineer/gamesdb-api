@@ -7,15 +7,17 @@ public class GameResponse {
     private Long statusId;
     private String statusName;
     private String consoleName;
+    private Double score;
 
     public GameResponse() {}
 
-    public GameResponse(Long gameId, String gameTitle, Long statusId, String statusName, String consoleName) {
+    public GameResponse(Long gameId, String gameTitle, Long statusId, String statusName, String consoleName, Double score) {
         this.gameId = gameId;
         this.gameTitle = gameTitle;
         this.statusId = statusId;
         this.statusName = statusName;
         this.consoleName = consoleName;
+        this.score = score;
     }
 
     public Long getGameId() {
@@ -58,5 +60,11 @@ public class GameResponse {
         this.consoleName = consoleName;
     }
 
-    
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
 }

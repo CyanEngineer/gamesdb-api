@@ -30,7 +30,7 @@ public class GameService {
     @Transactional
     public Game createGame(GameDTO dto) {
         Status status = findStatusById(dto.getStatusId());
-        Game game = new Game(dto.getTitle(), status, dto.getConsole());
+        Game game = new Game(dto.getTitle(), status, dto.getConsole(), dto.getScore());
 
         return gameRepository.save(game);
     }
@@ -39,7 +39,7 @@ public class GameService {
     public Game updateGame(Long id, GameDTO dto) {
         Status status = findStatusById(id);
         Game game = findGameById(id);
-        game.update(dto.getTitle(), status, dto.getConsole());
+        game.update(dto.getTitle(), status, dto.getConsole(), dto.getScore());
 
         return gameRepository.save(game);
     }
@@ -55,7 +55,8 @@ public class GameService {
             game.getTitle(), 
             game.getStatus().getId(), 
             game.getStatus().getName(), 
-            game.getConsole()
+            game.getConsole(),
+            game.getScore()
         );
     }
 

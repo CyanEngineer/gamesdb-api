@@ -22,14 +22,17 @@ public class Game {
 
     private String console; //TODO: Table for consoles
 
+    private Double score; //
+
     Game() {
 
     }
 
-    Game(String title, Status status, String console) {
+    Game(String title, Status status, String console, Double score) {
         this.title = title;
         this.status = status;
         this.console = console;
+        this.score = score;
     }
 
     public Long getId() {
@@ -64,16 +67,25 @@ public class Game {
         this.console = console;
     }
 
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
     public void update(Game newGame) {
         this.setTitle(newGame.getTitle());
         this.setStatus(newGame.getStatus());
         this.setConsole(newGame.getConsole());
     }
 
-    public void update(String title, Status status, String console) {
+    public void update(String title, Status status, String console, Double score) {
         this.setTitle(title);
         this.setStatus(status);
         this.setConsole(console);
+        this.setScore(score);
     }
 
     @Override

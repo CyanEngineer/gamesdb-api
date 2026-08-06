@@ -5,13 +5,15 @@ public class GameDTO {
     private String title;
     private Long statusId;
     private String console;
+    private Double score;
 
     public GameDTO() {}
 
-    public GameDTO(String title, Long statusId, String console) {
+    public GameDTO(String title, Long statusId, String console, Double score) {
         this.title = title;
         this.statusId = statusId;
         this.console = console;
+        this.score = score;
     }
 
     public String getTitle() {
@@ -36,5 +38,13 @@ public class GameDTO {
 
     public void setConsole(String console) {
         this.console = console;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
     }
 }
