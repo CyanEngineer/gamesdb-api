@@ -23,7 +23,7 @@ RESTful API for games I have played or want to play
   - ~~`Title` (string)~~
   - ~~`Status` (object?)~~
   - `Console` (object)
-  - `Score` (double)
+  - ~~`Score` (double)~~
   - `Sorting name` (string)
   - `Artwork`? (image/link?)
 - ~~CRUD~~

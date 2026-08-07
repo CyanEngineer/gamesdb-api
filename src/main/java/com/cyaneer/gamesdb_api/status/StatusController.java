@@ -72,7 +72,7 @@ public class StatusController {
     }
 
     @DeleteMapping("/statuses/{id}")
-    ResponseEntity<EntityModel<Status>> deleteStatus(@PathVariable Long id) {
+    ResponseEntity<EntityModel<StatusResponse>> deleteStatus(@PathVariable Long id) {
         service.deleteStatus(id);
 
         return ResponseEntity.noContent().build();
