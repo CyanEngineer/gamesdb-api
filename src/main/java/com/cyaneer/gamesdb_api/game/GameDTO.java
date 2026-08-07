@@ -4,15 +4,15 @@ public class GameDTO {
     
     private String title;
     private Long statusId;
-    private String console;
+    private Long consoleId;
     private Double score;
 
     public GameDTO() {}
 
-    public GameDTO(String title, Long statusId, String console, Double score) {
+    public GameDTO(String title, Long statusId, Long consoleId, Double score) {
         this.title = title;
         this.statusId = statusId;
-        this.console = console;
+        this.consoleId = consoleId;
         this.score = score;
     }
 
@@ -32,12 +32,12 @@ public class GameDTO {
         this.statusId = statusId;
     }
 
-    public String getConsole() {
-        return console;
+    public Long getConsoleId() {
+        return consoleId;
     }
 
-    public void setConsole(String console) {
-        this.console = console;
+    public void setConsoleId(Long consoleId) {
+        this.consoleId = consoleId;
     }
 
     public Double getScore() {

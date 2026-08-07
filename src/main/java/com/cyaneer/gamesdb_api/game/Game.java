@@ -2,6 +2,7 @@ package com.cyaneer.gamesdb_api.game;
 
 import java.util.Objects;
 
+import com.cyaneer.gamesdb_api.console.Console;
 import com.cyaneer.gamesdb_api.status.Status;
 
 import jakarta.persistence.Entity;
@@ -20,7 +21,8 @@ public class Game {
     @ManyToOne
     private Status status;
 
-    private String console; //TODO: Table for consoles
+    @ManyToOne
+    private Console console;
 
     private Double score; //
 
@@ -28,7 +30,7 @@ public class Game {
 
     }
 
-    Game(String title, Status status, String console, Double score) {
+    Game(String title, Status status, Console console, Double score) {
         this.title = title;
         this.status = status;
         this.console = console;
@@ -59,11 +61,11 @@ public class Game {
         this.status = status;
     }
 
-    public String getConsole() {
+    public Console getConsole() {
         return console;
     }
 
-    public void setConsole(String console) {
+    public void setConsole(Console console) {
         this.console = console;
     }
 
@@ -81,7 +83,7 @@ public class Game {
         this.setConsole(newGame.getConsole());
     }
 
-    public void update(String title, Status status, String console, Double score) {
+    public void update(String title, Status status, Console console, Double score) {
         this.setTitle(title);
         this.setStatus(status);
         this.setConsole(console);
@@ -99,7 +101,7 @@ public class Game {
             return this.id == game.id &&
                 this.title.equals(game.title) &&
                 this.status.equals(game.status) &&
-                this.console.equals(game.status);
+                this.console.equals(game.console);
         }
     }
 

@@ -16,13 +16,16 @@ RESTful API for games I have played or want to play
 - Documentation
   - OpenAPI/Swagger
 ### Tests
+- GameService
+- ConsoleService
+- StatusService
 ### Permanent database
 - e.g. PostgreSQL
 ### Games (object)
 - Fields:
   - ~~`Title` (string)~~
-  - ~~`Status` (object?)~~
-  - `Console` (object)
+  - ~~`Status` (object)~~
+  - ~~`Console` (object)~~
   - ~~`Score` (double)~~
   - `Sorting name` (string)
   - `Artwork`? (image/link?)
@@ -32,8 +35,8 @@ RESTful API for games I have played or want to play
 - ~~CRUD~~
 - ~~Return StatusResponse for good measure~~
 ### Console (object)
-- Needs to be flexible since there will keep coming new consoles
-- CRUD
+- ~~Needs to be flexible since there will keep coming new consoles~~
+- ~~CRUD~~
 ### Hosting
 - On my website
 - Authentication

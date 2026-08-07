@@ -6,16 +6,18 @@ public class GameResponse {
     private String gameTitle;
     private Long statusId;
     private String statusName;
+    private Long consoleId;
     private String consoleName;
     private Double score;
 
     public GameResponse() {}
 
-    public GameResponse(Long gameId, String gameTitle, Long statusId, String statusName, String consoleName, Double score) {
+    public GameResponse(Long gameId, String gameTitle, Long statusId, String statusName, Long consoleId, String consoleName, Double score) {
         this.gameId = gameId;
         this.gameTitle = gameTitle;
         this.statusId = statusId;
         this.statusName = statusName;
+        this.consoleId = consoleId;
         this.consoleName = consoleName;
         this.score = score;
     }
@@ -50,6 +52,14 @@ public class GameResponse {
 
     public void setStatusName(String statusName) {
         this.statusName = statusName;
+    }
+
+    public Long getConsoleId() {
+        return consoleId;
+    }
+
+    public void setConsoleId(Long consoleId) {
+        this.consoleId = consoleId;
     }
 
     public String getConsoleName() {

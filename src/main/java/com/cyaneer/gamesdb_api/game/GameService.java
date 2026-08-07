@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cyaneer.gamesdb_api.console.Console;
+import com.cyaneer.gamesdb_api.console.ConsoleNotFoundException;
+import com.cyaneer.gamesdb_api.console.ConsoleRepository;
 import com.cyaneer.gamesdb_api.status.Status;
 import com.cyaneer.gamesdb_api.status.StatusNotFoundException;
 import com.cyaneer.gamesdb_api.status.StatusRepository;
@@ -13,10 +16,12 @@ import com.cyaneer.gamesdb_api.status.StatusRepository;
 public class GameService {
     private final GameRepository gameRepository;
     private final StatusRepository statusRepository;
+    private final ConsoleRepository consoleRepository;
 
-    public GameService(GameRepository gameRepository, StatusRepository statusRepository) {
+    public GameService(GameRepository gameRepository, StatusRepository statusRepository, ConsoleRepository consoleRepository) {
         this.gameRepository = gameRepository;
         this.statusRepository = statusRepository;
+        this.consoleRepository = consoleRepository;
     }
 
     public List<Game> getAllGames() {
@@ -30,16 +35,18 @@ public class GameService {
     @Transactional
     public Game createGame(GameDTO dto) {
         Status status = findStatusById(dto.getStatusId());
-        Game game = new Game(dto.getTitle(), status, dto.getConsole(), dto.getScore());
+        Console console = findConsoleById(dto.getConsoleId());
+        Game game = new Game(dto.getTitle(), status, console, dto.getScore());
 
         return gameRepository.save(game);
     }
 
     @Transactional
     public Game updateGame(Long id, GameDTO dto) {
+        Console console = findConsoleById(id);
         Status status = findStatusById(id);
         Game game = findGameById(id);
-        game.update(dto.getTitle(), status, dto.getConsole(), dto.getScore());
+        game.update(dto.getTitle(), status, console, dto.getScore());
 
         return gameRepository.save(game);
     }
@@ -54,8 +61,9 @@ public class GameService {
             game.getId(), 
             game.getTitle(), 
             game.getStatus().getId(), 
-            game.getStatus().getName(), 
-            game.getConsole(),
+            game.getStatus().getName(),
+            game.getConsole().getId(),
+            game.getConsole().getName(),
             game.getScore()
         );
     }
@@ -68,5 +76,10 @@ public class GameService {
     private Status findStatusById(Long id) {
         return statusRepository.findById(id)
             .orElseThrow(() -> new StatusNotFoundException(id));
+    }
+
+    private Console findConsoleById(Long id) {
+        return consoleRepository.findById(id)
+            .orElseThrow(() -> new ConsoleNotFoundException(id));
     }
 }
