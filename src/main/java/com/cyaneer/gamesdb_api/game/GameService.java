@@ -43,8 +43,8 @@ public class GameService {
 
     @Transactional
     public Game updateGame(Long id, GameDTO dto) {
-        Console console = findConsoleById(id);
-        Status status = findStatusById(id);
+        Console console = findConsoleById(dto.getConsoleId());
+        Status status = findStatusById(dto.getStatusId());
         Game game = findGameById(id);
         game.update(dto.getTitle(), status, console, dto.getScore());
 
