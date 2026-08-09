@@ -26,11 +26,11 @@ public class Game {
 
     private Double score; //
 
-    Game() {
+    public Game() {
 
     }
 
-    Game(String title, Status status, Console console, Double score) {
+    public Game(String title, Status status, Console console, Double score) {
         this.title = title;
         this.status = status;
         this.console = console;

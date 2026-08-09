@@ -14,9 +14,9 @@ public class Status {
 
     private String name;
 
-    Status() {}
+    public Status() {}
 
-    Status(String name) {
+    public Status(String name) {
         this.name = name;
     }
 

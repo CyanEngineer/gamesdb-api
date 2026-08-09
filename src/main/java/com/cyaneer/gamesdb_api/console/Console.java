@@ -14,9 +14,9 @@ public class Console {
 
     private String name;
 
-    Console() {}
+    public Console() {}
 
-    Console(String name) {
+    public Console(String name) {
         this.name = name;
     }
 

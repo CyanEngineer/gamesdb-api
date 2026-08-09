@@ -7,9 +7,9 @@ public class StatusDTO {
     @NotBlank
     private String name;
 
-    StatusDTO() {}
+    public StatusDTO() {}
 
-    StatusDTO(String name) {
+    public StatusDTO(String name) {
         this.name = name;
     }
 

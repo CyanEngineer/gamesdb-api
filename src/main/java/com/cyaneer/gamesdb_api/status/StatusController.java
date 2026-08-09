@@ -46,7 +46,7 @@ public class StatusController {
 
     @PostMapping("/statuses")
     ResponseEntity<EntityModel<StatusResponse>> newStatus(@Valid @RequestBody StatusDTO dto) {
-        StatusResponse statusResponse = service.mapToResponse(service.createNewStatus(dto));
+        StatusResponse statusResponse = service.mapToResponse(service.createStatus(dto));
         EntityModel<StatusResponse> entityModel = responseAssembler.toModel(statusResponse);
 
         return ResponseEntity

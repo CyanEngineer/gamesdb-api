@@ -22,8 +22,8 @@ RESTful API for games I have played or want to play
   - OpenAPI/Swagger
 ### Tests
 - GameService
-- ConsoleService
-- StatusService
+- ~~ConsoleService~~
+- ~~StatusService~~
 ### Permanent database
 - e.g. PostgreSQL
 ### Games (object)

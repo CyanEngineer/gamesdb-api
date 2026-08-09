@@ -23,7 +23,7 @@ public class StatusService {
     }
 
     @Transactional
-    public Status createNewStatus(StatusDTO dto) {
+    public Status createStatus(StatusDTO dto) {
         Status status = new Status(dto.getName());
 
         return repository.save(status);
