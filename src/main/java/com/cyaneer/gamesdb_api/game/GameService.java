@@ -34,19 +34,23 @@ public class GameService {
 
     @Transactional
     public Game createGame(GameDTO dto) {
+        String title = dto.getTitle();
         Status status = findStatusById(dto.getStatusId());
         Console console = findConsoleById(dto.getConsoleId());
-        Game game = new Game(dto.getTitle(), status, console, dto.getScore());
+        Double score = formatScore(dto.getScore());
+        Game game = new Game(title, status, console, score);
 
         return gameRepository.save(game);
     }
 
     @Transactional
     public Game updateGame(Long id, GameDTO dto) {
+        String title = dto.getTitle();
         Console console = findConsoleById(dto.getConsoleId());
         Status status = findStatusById(dto.getStatusId());
         Game game = findGameById(id);
-        game.update(dto.getTitle(), status, console, dto.getScore());
+        Double score = formatScore(dto.getScore());
+        game.update(title, status, console, score);
 
         return gameRepository.save(game);
     }
@@ -66,6 +70,16 @@ public class GameService {
             game.getConsole().getName(),
             game.getScore()
         );
+    }
+
+    private Double formatScore(Double score) {
+        if(score == null) {
+            return null;
+        } else if (score < 0.1) {
+            return 0.0; // Avoids -0.0
+        } else {
+            return Math.round(score * 10) / 10.0;
+        }
     }
 
     private Game findGameById(Long id) {
