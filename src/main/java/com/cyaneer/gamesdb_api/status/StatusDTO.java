@@ -1,7 +1,10 @@
 package com.cyaneer.gamesdb_api.status;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class StatusDTO {
     
+    @NotBlank
     private String name;
 
     StatusDTO() {}

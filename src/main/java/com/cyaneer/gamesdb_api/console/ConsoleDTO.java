@@ -1,7 +1,10 @@
 package com.cyaneer.gamesdb_api.console;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class ConsoleDTO {
     
+    @NotBlank
     private String name;
 
     public ConsoleDTO() {}

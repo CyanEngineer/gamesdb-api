@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class StatusController {
     
@@ -43,7 +45,7 @@ public class StatusController {
     }
 
     @PostMapping("/statuses")
-    ResponseEntity<EntityModel<StatusResponse>> newStatus(@RequestBody StatusDTO dto) {
+    ResponseEntity<EntityModel<StatusResponse>> newStatus(@Valid @RequestBody StatusDTO dto) {
         StatusResponse statusResponse = service.mapToResponse(service.createNewStatus(dto));
         EntityModel<StatusResponse> entityModel = responseAssembler.toModel(statusResponse);
 
@@ -62,7 +64,7 @@ public class StatusController {
     }
 
     @PutMapping("/statuses/{id}")
-    ResponseEntity<EntityModel<StatusResponse>> replaceStatus(@RequestBody StatusDTO dto, @PathVariable Long id) {
+    ResponseEntity<EntityModel<StatusResponse>> replaceStatus(@PathVariable Long id, @Valid @RequestBody StatusDTO dto) {
         StatusResponse updatedStatus = service.mapToResponse(service.updateStatus(id, dto));
         EntityModel<StatusResponse> entityModel = responseAssembler.toModel(updatedStatus);
 

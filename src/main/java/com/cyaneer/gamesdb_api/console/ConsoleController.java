@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class ConsoleController {
     
@@ -43,7 +45,7 @@ public class ConsoleController {
     }
 
     @PostMapping("/consoles")
-    public ResponseEntity<EntityModel<ConsoleResponse>> newConsole(@RequestBody ConsoleDTO dto) {
+    public ResponseEntity<EntityModel<ConsoleResponse>> newConsole(@Valid @RequestBody ConsoleDTO dto) {
         Console console = service.createConsole(dto);
         EntityModel<ConsoleResponse> entityModel = modelAssembler.toModel(service.mapToResponse(console));
 
@@ -62,7 +64,7 @@ public class ConsoleController {
     }
 
     @PutMapping("/consoles/{id}")
-    public ResponseEntity<EntityModel<ConsoleResponse>> replaceConsole(@PathVariable Long id, @RequestBody ConsoleDTO dto) {
+    public ResponseEntity<EntityModel<ConsoleResponse>> replaceConsole(@PathVariable Long id, @Valid @RequestBody ConsoleDTO dto) {
         Console console = service.updateConsole(id, dto);
         EntityModel<ConsoleResponse> entityModel = modelAssembler.toModel(service.mapToResponse(console));
 

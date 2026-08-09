@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class GameController {
     
@@ -45,7 +47,7 @@ public class GameController {
     }
 
     @PostMapping("/games")
-    ResponseEntity<EntityModel<GameResponse>> newGame(@RequestBody GameDTO dto) {
+    ResponseEntity<EntityModel<GameResponse>> newGame(@Valid @RequestBody GameDTO dto) {
         GameResponse gameResponse = service.mapToResponse(service.createGame(dto));
         EntityModel<GameResponse> entityModel = responseAssembler.toModel(gameResponse);
         
@@ -64,7 +66,7 @@ public class GameController {
     }
 
     @PutMapping("/games/{id}")
-    ResponseEntity<EntityModel<GameResponse>> replaceGame(@RequestBody GameDTO dto, @PathVariable Long id) {
+    ResponseEntity<EntityModel<GameResponse>> replaceGame(@PathVariable Long id, @Valid @RequestBody GameDTO dto) {
         GameResponse updatedGame = service.mapToResponse(service.updateGame(id, dto));
         EntityModel<GameResponse> entityModel = responseAssembler.toModel(updatedGame);
 

@@ -3,10 +3,15 @@
 RESTful API for games I have played or want to play
 
 ## Roadmap
+### Improvements
+- DecimalMin/DecimalMax aren't actually supported for Double. Consider:
+  - BigDecimal
+  - Custom Score object with valid range and one decimal
 ### Standard API features
 - CRUD
   - ~~Basic implementation~~
-  - Validation
+  - ~~Validation~~
+  - Check duplicates
 - ~~RESTful~~
   - ~~HATEOAS~~
 - Pagination
@@ -26,7 +31,10 @@ RESTful API for games I have played or want to play
   - ~~`Title` (string)~~
   - ~~`Status` (object)~~
   - ~~`Console` (object)~~
-  - ~~`Score` (double)~~
+  - `Score` (double)
+    - ~~Implementation~~
+    - ~~Ensure 0<=score<=10~~
+    - Ensure single decimal
   - `Sorting name` (string)
   - `Artwork`? (image/link?)
 - ~~CRUD~~
