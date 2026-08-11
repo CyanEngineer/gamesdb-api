@@ -24,17 +24,20 @@ public class Game {
     @ManyToOne
     private Console console;
 
-    private Double score; //
+    private Double score;
+
+    private String sortingName;
 
     public Game() {
 
     }
 
-    public Game(String title, Status status, Console console, Double score) {
+    public Game(String title, Status status, Console console, Double score, String sortingName) {
         this.title = title;
         this.status = status;
         this.console = console;
         this.score = score;
+        this.sortingName = sortingName;
     }
 
     public Long getId() {
@@ -77,17 +80,20 @@ public class Game {
         this.score = score;
     }
 
-    public void update(Game newGame) {
-        this.setTitle(newGame.getTitle());
-        this.setStatus(newGame.getStatus());
-        this.setConsole(newGame.getConsole());
+    public String getSortingName() {
+        return sortingName;
     }
 
-    public void update(String title, Status status, Console console, Double score) {
+    public void setSortingName(String sortingName) {
+        this.sortingName = sortingName;
+    }
+
+    public void update(String title, Status status, Console console, Double score, String sortingName) {
         this.setTitle(title);
         this.setStatus(status);
         this.setConsole(console);
         this.setScore(score);
+        this.setSortingName(sortingName);
     }
 
     @Override
@@ -101,17 +107,19 @@ public class Game {
             return this.id == game.id &&
                 this.title.equals(game.title) &&
                 this.status.equals(game.status) &&
-                this.console.equals(game.console);
+                this.console.equals(game.console) &&
+                this.score.equals(game.score) &&
+                this.sortingName.equals(game.sortingName);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.title, this.status, this.console);
+        return Objects.hash(this.id, this.title, this.status, this.console, this.score, this.sortingName);
     }
 
     @Override
     public String toString() {
-        return "Game{id=" + this.id + ", title=" + this.title + ", status=" + this.status + ", console=" + this.console + "}";
+        return "Game{id=" + this.id + ", title=" + this.title + ", status=" + this.status + ", console=" + this.console + ", score=" + this.score + ", sortingName=" + this.sortingName + "}";
     }
 }

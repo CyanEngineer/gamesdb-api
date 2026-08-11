@@ -38,7 +38,8 @@ public class GameService {
         Status status = findStatusById(dto.getStatusId());
         Console console = findConsoleById(dto.getConsoleId());
         Double score = formatScore(dto.getScore());
-        Game game = new Game(title, status, console, score);
+        String sortingName = getSortingName(dto.getSortingName(), dto.getTitle());
+        Game game = new Game(title, status, console, score, sortingName);
 
         return gameRepository.save(game);
     }
@@ -46,11 +47,13 @@ public class GameService {
     @Transactional
     public Game updateGame(Long id, GameDTO dto) {
         String title = dto.getTitle();
-        Console console = findConsoleById(dto.getConsoleId());
         Status status = findStatusById(dto.getStatusId());
-        Game game = findGameById(id);
+        Console console = findConsoleById(dto.getConsoleId());
         Double score = formatScore(dto.getScore());
-        game.update(title, status, console, score);
+        String sortingName = getSortingName(dto.getSortingName(), dto.getTitle());
+        Game game = findGameById(id);
+        
+        game.update(title, status, console, score, sortingName);
 
         return gameRepository.save(game);
     }
@@ -68,7 +71,8 @@ public class GameService {
             game.getStatus().getName(),
             game.getConsole().getId(),
             game.getConsole().getName(),
-            game.getScore()
+            game.getScore(),
+            game.getSortingName()
         );
     }
 
@@ -79,6 +83,16 @@ public class GameService {
             return 0.0; // Avoids -0.0
         } else {
             return Math.round(score * 10) / 10.0;
+        }
+    }
+
+    private String getSortingName(String sortingName, String title) {
+        if(sortingName != null && !sortingName.isBlank()) {
+            return sortingName;
+        } else {
+            String lower = title.toLowerCase();
+            String noLeadingArticles = lower.replaceAll("^(a |an |the )", "");
+            return noLeadingArticles;
         }
     }
 

@@ -21,7 +21,7 @@ RESTful API for games I have played or want to play
 - Documentation
   - OpenAPI/Swagger
 ### Tests
-- GameService
+- ~~GameService~~
 - ~~ConsoleService~~
 - ~~StatusService~~
 ### Permanent database
@@ -31,10 +31,10 @@ RESTful API for games I have played or want to play
   - ~~`Title` (string)~~
   - ~~`Status` (object)~~
   - ~~`Console` (object)~~
-  - `Score` (double)
+  - ~~`Score` (double)~~
     - ~~Implementation~~
     - ~~Ensure 0<=score<=10~~
-    - Ensure single decimal
+    - ~~Ensure single decimal~~
   - `Sorting name` (string)
   - `Artwork`? (image/link?)
 - ~~CRUD~~

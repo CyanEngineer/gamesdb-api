@@ -44,17 +44,18 @@ public class GameServiceTest {
     
     @Test
     public void testCreateGameCreatesGame() {
-        when(statusRepository.findById(1L)).thenReturn(Optional.of(new Status("2")));
-        when(consoleRepository.findById(3L)).thenReturn(Optional.of(new Console("4")));
+        when(statusRepository.findById(1L)).thenReturn(Optional.of(new Status("1")));
+        when(consoleRepository.findById(2L)).thenReturn(Optional.of(new Console("2")));
         when(gameRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
-        GameDTO dto = new GameDTO("0", 1L, 3L, 5.0);
+        GameDTO dto = new GameDTO("0", 1L, 2L, 3.0, "4");
         Game savedGame = service.createGame(dto);
         assert(savedGame != null);
         assert("0".equals(savedGame.getTitle()));
-        assert("2".equals(savedGame.getStatus().getName()));
-        assert("4".equals(savedGame.getConsole().getName()));
-        assert(savedGame.getScore().equals(5.0));
+        assert("1".equals(savedGame.getStatus().getName()));
+        assert("2".equals(savedGame.getConsole().getName()));
+        assert(3.0 == savedGame.getScore());
+        assert("4".equals(savedGame.getSortingName()));
     }
 
     @Test
@@ -63,31 +64,85 @@ public class GameServiceTest {
         when(consoleRepository.findById(1L)).thenReturn(Optional.of(new Console("1")));
         when(gameRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
 
-        GameDTO dto = new GameDTO("0", 1L, 1L, 5.01);
+        GameDTO dto = new GameDTO("0", 1L, 1L, 5.01, "0");
         Game savedGame = service.createGame(dto);
         assert(savedGame.getScore().equals(5.0));
 
-        dto = new GameDTO("0", 1L, 1L, 5.05);
+        dto = new GameDTO("0", 1L, 1L, 5.05, "0");
         savedGame = service.createGame(dto);
         assert(savedGame.getScore().equals(5.1));
     }
 
     @Test
-    public void testUpdateGameUpdatesGame() {
-        Game game = new Game("0", new Status("0"), new Console("0"), 0.0);
-
-        when(statusRepository.findById(2L)).thenReturn(Optional.of(new Status("3")));
-        when(consoleRepository.findById(4L)).thenReturn(Optional.of(new Console("5")));
+    public void testCreateGameSortingnameOmitsLeadingArticles() {
+        when(statusRepository.findById(1L)).thenReturn(Optional.of(new Status("1")));
+        when(consoleRepository.findById(1L)).thenReturn(Optional.of(new Console("1")));
         when(gameRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
-        when(gameRepository.findById(anyLong())).thenReturn(Optional.of(game));
 
-        GameDTO dto = new GameDTO("1", 2L, 4L, 6.0);
+        GameDTO aPlatformer = new GameDTO("A Platformer", 1L, 1L, null, null);
+        Game savedAPlatformer = service.createGame(aPlatformer);
+        assert(savedAPlatformer.getSortingName().equals("platformer"));
+
+        GameDTO anRPG = new GameDTO("An RPG", 1L, 1L, null, null);
+        Game savedAnRPG = service.createGame(anRPG);
+        assert(savedAnRPG.getSortingName().equals("rpg"));
+
+        GameDTO theMetroidvania = new GameDTO("The Metroidvania", 1L, 1L, null, null);
+        Game savedTheMetroidvania = service.createGame(theMetroidvania);
+        assert(savedTheMetroidvania.getSortingName().equals("metroidvania"));
+    }
+
+    @Test
+    public void testCreateGameSortingnameDoesntOmitNonleadingArticles() {
+        when(statusRepository.findById(1L)).thenReturn(Optional.of(new Status("1")));
+        when(consoleRepository.findById(1L)).thenReturn(Optional.of(new Console("1")));
+        when(gameRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+
+        GameDTO itsAPlatformer = new GameDTO("It's a Platformer", 1L, 1L, null, null);
+        Game savedAPlatformer = service.createGame(itsAPlatformer);
+        assert(savedAPlatformer.getSortingName().equals("it's a platformer"));
+
+        GameDTO itsAnRPG = new GameDTO("It's an RPG", 1L, 1L, null, null);
+        Game savedAnRPG = service.createGame(itsAnRPG);
+        assert(savedAnRPG.getSortingName().equals("it's an rpg"));
+
+        GameDTO itsTheMetroidvania = new GameDTO("It's the Metroidvania", 1L, 1L, null, null);
+        Game savedTheMetroidvania = service.createGame(itsTheMetroidvania);
+        assert(savedTheMetroidvania.getSortingName().equals("it's the metroidvania"));
+    }
+
+    @Test
+    public void testCreateGameSortingnameDoesntOmitLeadingNonarticles() {
+        when(statusRepository.findById(1L)).thenReturn(Optional.of(new Status("1")));
+        when(consoleRepository.findById(1L)).thenReturn(Optional.of(new Console("1")));
+        when(gameRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+
+        GameDTO anotherFifa = new GameDTO("Another FIFA", 1L, 1L, null, null);
+        Game savedAnotherFifa = service.createGame(anotherFifa);
+        assert(savedAnotherFifa.getSortingName().equals("another fifa"));
+
+        GameDTO theseCODs = new GameDTO("These CoDs", 1L, 1L, null, null);
+        Game savedTheseCODs = service.createGame(theseCODs);
+        assert(savedTheseCODs.getSortingName().equals("these cods"));
+    }
+
+    @Test
+    public void testUpdateGameUpdatesGame() {
+        Game game = new Game("0", new Status("0"), new Console("0"), 0.0, "0");
+
+        when(statusRepository.findById(2L)).thenReturn(Optional.of(new Status("2")));
+        when(consoleRepository.findById(3L)).thenReturn(Optional.of(new Console("3")));
+        when(gameRepository.findById(anyLong())).thenReturn(Optional.of(game));
+        when(gameRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+
+        GameDTO dto = new GameDTO("1", 2L, 3L, 4.0, "5");
         Game savedGame = service.updateGame(1L, dto);
         assert(savedGame != null);
         assert("1".equals(savedGame.getTitle()));
-        assert("3".equals(savedGame.getStatus().getName()));
-        assert("5".equals(savedGame.getConsole().getName()));
-        assert(6.0 == savedGame.getScore());
+        assert("2".equals(savedGame.getStatus().getName()));
+        assert("3".equals(savedGame.getConsole().getName()));
+        assert(4.0 == savedGame.getScore());
+        assert("5".equals(savedGame.getSortingName()));
     }
 
     @Test

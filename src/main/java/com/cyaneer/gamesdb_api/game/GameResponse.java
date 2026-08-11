@@ -9,10 +9,11 @@ public class GameResponse {
     private Long consoleId;
     private String consoleName;
     private Double score;
+    private String sortingName;
 
     public GameResponse() {}
 
-    public GameResponse(Long gameId, String gameTitle, Long statusId, String statusName, Long consoleId, String consoleName, Double score) {
+    public GameResponse(Long gameId, String gameTitle, Long statusId, String statusName, Long consoleId, String consoleName, Double score, String sortingName) {
         this.gameId = gameId;
         this.gameTitle = gameTitle;
         this.statusId = statusId;
@@ -20,6 +21,7 @@ public class GameResponse {
         this.consoleId = consoleId;
         this.consoleName = consoleName;
         this.score = score;
+        this.sortingName = sortingName;
     }
 
     public Long getGameId() {
@@ -76,5 +78,13 @@ public class GameResponse {
 
     public void setScore(Double score) {
         this.score = score;
+    }
+
+    public String getSortingName() {
+        return sortingName;
+    }
+
+    public void setSortingName(String sortingName) {
+        this.sortingName = sortingName;
     }
 }

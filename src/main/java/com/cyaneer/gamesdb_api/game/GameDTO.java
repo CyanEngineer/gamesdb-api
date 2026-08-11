@@ -20,13 +20,16 @@ public class GameDTO {
     @DecimalMax(value = "10.0", message = "score must be at most 10")
     private Double score;
 
+    private String sortingName;
+
     public GameDTO() {}
 
-    public GameDTO(String title, Long statusId, Long consoleId, Double score) {
+    public GameDTO(String title, Long statusId, Long consoleId, Double score, String sortingName) {
         this.title = title;
         this.statusId = statusId;
         this.consoleId = consoleId;
         this.score = score;
+        this.sortingName = sortingName;
     }
 
     public String getTitle() {
@@ -59,5 +62,13 @@ public class GameDTO {
 
     public void setScore(Double score) {
         this.score = score;
+    }
+
+    public String getSortingName() {
+        return sortingName;
+    }
+
+    public void setSortingName(String sortingName) {
+        this.sortingName = sortingName;
     }
 }
