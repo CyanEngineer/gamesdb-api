@@ -25,7 +25,7 @@ RESTful API for games I have played or want to play
 - ~~ConsoleService~~
 - ~~StatusService~~
 ### Permanent database
-- e.g. PostgreSQL
+- ~~PostgreSQL~~
 ### Games (object)
 - Fields:
   - ~~`Title` (string)~~
@@ -35,7 +35,7 @@ RESTful API for games I have played or want to play
     - ~~Implementation~~
     - ~~Ensure 0<=score<=10~~
     - ~~Ensure single decimal~~
-  - `Sorting name` (string)
+  - ~~`Sorting name` (string)~~
   - `Artwork`? (image/link?)
 - ~~CRUD~~
 ### Status (object)
