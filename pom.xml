@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.cyaneer</groupId>
 	<artifactId>gamesdb-api</artifactId>
-	<version>0.3.7</version>
+	<version>0.4.0</version>
 	<name/>
 	<description/>
 	<url/>
@@ -51,9 +51,14 @@
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
