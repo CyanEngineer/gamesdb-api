@@ -19,7 +19,8 @@ RESTful API for games I have played or want to play
 - Filtering
 - Search (fuzzy?)
 - Documentation
-  - OpenAPI/Swagger
+  - ~~Swagger~~
+  - Implement more helpful documentation
 ### Tests
 - ~~GameService~~
 - ~~ConsoleService~~
@@ -46,7 +47,7 @@ RESTful API for games I have played or want to play
 - ~~Needs to be flexible since there will keep coming new consoles~~
 - ~~CRUD~~
 ### Hosting
-- On my website
+- ~~On my website~~
 - Authentication
   - My collection
     - Full read/write for me
