@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
+@Tag(name = "Games", description = "API endpoints for interacting with games. There must exist at least one console and status before a game can be created")
 public class GameController {
     
     private final GameService service;
@@ -31,6 +34,10 @@ public class GameController {
     }
 
     @GetMapping("/games")
+    @Operation(
+        summary = "Get all games",
+        description = "Returns all games in the database"
+    )
     ResponseEntity<CollectionModel<EntityModel<GameResponse>>> all() {
         List<Game> games = service.getAllGames();
 
@@ -47,6 +54,10 @@ public class GameController {
     }
 
     @PostMapping("/games")
+    @Operation(
+        summary = "Add a new game",
+        description = "Create a new game based on the request body"
+    )
     ResponseEntity<EntityModel<GameResponse>> newGame(@Valid @RequestBody GameDTO dto) {
         GameResponse gameResponse = service.mapToResponse(service.createGame(dto));
         EntityModel<GameResponse> entityModel = responseAssembler.toModel(gameResponse);
@@ -57,6 +68,10 @@ public class GameController {
     }
 
     @GetMapping("/games/{id}")
+    @Operation(
+        summary = "Get one game",
+        description = "Returns the specified game"
+    )
     ResponseEntity<EntityModel<GameResponse>> one(@PathVariable Long id) {
         GameResponse gameResponse = service.mapToResponse(service.getGame(id));
         EntityModel<GameResponse> entityModel = responseAssembler.toModel(gameResponse);
@@ -66,6 +81,10 @@ public class GameController {
     }
 
     @PutMapping("/games/{id}")
+    @Operation(
+        summary = "Update a game",
+        description = "Update the specified game based on the request body"
+    )
     ResponseEntity<EntityModel<GameResponse>> replaceGame(@PathVariable Long id, @Valid @RequestBody GameDTO dto) {
         GameResponse updatedGame = service.mapToResponse(service.updateGame(id, dto));
         EntityModel<GameResponse> entityModel = responseAssembler.toModel(updatedGame);
@@ -76,6 +95,10 @@ public class GameController {
     }
 
     @DeleteMapping("/games/{id}")
+    @Operation(
+        summary = "Delete a game",
+        description = "Delete the specified game from the database"
+    )
     ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         service.deleteGame(id);
 

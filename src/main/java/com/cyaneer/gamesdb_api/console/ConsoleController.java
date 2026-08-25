@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
+@Tag(name = "Consoles", description = "API endpoints for interacting with consoles. A console can't be deleted if any games are using it.")
 public class ConsoleController {
     
     private ConsoleService service;
@@ -32,6 +35,10 @@ public class ConsoleController {
     }
 
     @GetMapping("/consoles")
+    @Operation(
+        summary = "Get all consoles",
+        description = "Returns all consoles in the database"
+    )
     public ResponseEntity<CollectionModel<EntityModel<ConsoleResponse>>> all() {
         List<EntityModel<ConsoleResponse>> consoles = service.getAllConsoles().stream()
             .map(service::mapToResponse)
@@ -45,6 +52,10 @@ public class ConsoleController {
     }
 
     @PostMapping("/consoles")
+    @Operation(
+        summary = "Add a new console",
+        description = "Create a new console based on the request body"
+    )
     public ResponseEntity<EntityModel<ConsoleResponse>> newConsole(@Valid @RequestBody ConsoleDTO dto) {
         Console console = service.createConsole(dto);
         EntityModel<ConsoleResponse> entityModel = modelAssembler.toModel(service.mapToResponse(console));
@@ -55,6 +66,10 @@ public class ConsoleController {
     }
 
     @GetMapping("/consoles/{id}")
+    @Operation(
+        summary = "Get one console",
+        description = "Returns the specified console"
+    )
     public ResponseEntity<EntityModel<ConsoleResponse>> one(@PathVariable Long id) {
         Console console = service.getConsole(id);
         EntityModel<ConsoleResponse> entityModel = modelAssembler.toModel(service.mapToResponse(console));
@@ -64,6 +79,10 @@ public class ConsoleController {
     }
 
     @PutMapping("/consoles/{id}")
+    @Operation(
+        summary = "Update a console",
+        description = "Update the specified console based on the request body"
+    )
     public ResponseEntity<EntityModel<ConsoleResponse>> replaceConsole(@PathVariable Long id, @Valid @RequestBody ConsoleDTO dto) {
         Console console = service.updateConsole(id, dto);
         EntityModel<ConsoleResponse> entityModel = modelAssembler.toModel(service.mapToResponse(console));
@@ -74,6 +93,10 @@ public class ConsoleController {
     }
 
     @DeleteMapping("/consoles/{id}")
+    @Operation(
+        summary = "Delete a console",
+        description = "Delete the specified console from the database"
+    )
     public ResponseEntity<EntityModel<ConsoleResponse>> deleteConsole(@PathVariable Long id) {
         service.deleteConsole(id);
 

@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
+@Tag(name = "Statuses", description = "API endpoints for interacting with statuses. A status can't be deleted if any games are using it.")
 public class StatusController {
     
     private final StatusService service;
@@ -32,6 +35,10 @@ public class StatusController {
     }
 
     @GetMapping("/statuses")
+    @Operation(
+        summary = "Get all statuses",
+        description = "Returns all statuses in the database"
+    )
     ResponseEntity<CollectionModel<EntityModel<StatusResponse>>> all() {
         List<EntityModel<StatusResponse>> statuses = service.getAllStatuses().stream()
             .map(service::mapToResponse)
@@ -45,6 +52,10 @@ public class StatusController {
     }
 
     @PostMapping("/statuses")
+    @Operation(
+        summary = "Add a new status",
+        description = "Create a new status based on the request body"
+    )
     ResponseEntity<EntityModel<StatusResponse>> newStatus(@Valid @RequestBody StatusDTO dto) {
         StatusResponse statusResponse = service.mapToResponse(service.createStatus(dto));
         EntityModel<StatusResponse> entityModel = responseAssembler.toModel(statusResponse);
@@ -55,6 +66,10 @@ public class StatusController {
     }
 
     @GetMapping("/statuses/{id}")
+    @Operation(
+        summary = "Get one status",
+        description = "Returns the specified status"
+    )
     ResponseEntity<EntityModel<StatusResponse>> one(@PathVariable Long id) {
         StatusResponse statusResponse = service.mapToResponse(service.getStatus(id));
         EntityModel<StatusResponse> entityModel = responseAssembler.toModel(statusResponse);
@@ -64,6 +79,10 @@ public class StatusController {
     }
 
     @PutMapping("/statuses/{id}")
+    @Operation(
+        summary = "Update a status",
+        description = "Update the specified status based on the request body"
+    )
     ResponseEntity<EntityModel<StatusResponse>> replaceStatus(@PathVariable Long id, @Valid @RequestBody StatusDTO dto) {
         StatusResponse updatedStatus = service.mapToResponse(service.updateStatus(id, dto));
         EntityModel<StatusResponse> entityModel = responseAssembler.toModel(updatedStatus);
@@ -74,6 +93,10 @@ public class StatusController {
     }
 
     @DeleteMapping("/statuses/{id}")
+    @Operation(
+        summary = "Delete a status",
+        description = "Delete the specified console from the status"
+    )
     ResponseEntity<EntityModel<StatusResponse>> deleteStatus(@PathVariable Long id) {
         service.deleteStatus(id);
 
