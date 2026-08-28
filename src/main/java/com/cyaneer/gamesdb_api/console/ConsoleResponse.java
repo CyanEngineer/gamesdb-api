@@ -1,5 +1,8 @@
 package com.cyaneer.gamesdb_api.console;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "ConsoleResponse", description = "The console where the game was played")
 public class ConsoleResponse {
     
     private Long id;

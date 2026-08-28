@@ -19,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -39,6 +43,14 @@ public class StatusController {
         summary = "Get all statuses",
         description = "Returns all statuses in the database"
     )
+    @ApiResponse(
+        responseCode = "200",
+        description = "All statuses in the database",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = StatusResponse.class))
+        )
+    )  
     ResponseEntity<CollectionModel<EntityModel<StatusResponse>>> all() {
         List<EntityModel<StatusResponse>> statuses = service.getAllStatuses().stream()
             .map(service::mapToResponse)
@@ -56,6 +68,14 @@ public class StatusController {
         summary = "Add a new status",
         description = "Create a new status based on the request body"
     )
+    @ApiResponse(
+        responseCode = "201",
+        description = "The created status",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = StatusResponse.class)
+        )
+    )  
     ResponseEntity<EntityModel<StatusResponse>> newStatus(@Valid @RequestBody StatusDTO dto) {
         StatusResponse statusResponse = service.mapToResponse(service.createStatus(dto));
         EntityModel<StatusResponse> entityModel = responseAssembler.toModel(statusResponse);
@@ -70,6 +90,14 @@ public class StatusController {
         summary = "Get one status",
         description = "Returns the specified status"
     )
+    @ApiResponse(
+        responseCode = "200",
+        description = "The specified status",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = StatusResponse.class)
+        )
+    )  
     ResponseEntity<EntityModel<StatusResponse>> one(@PathVariable Long id) {
         StatusResponse statusResponse = service.mapToResponse(service.getStatus(id));
         EntityModel<StatusResponse> entityModel = responseAssembler.toModel(statusResponse);
@@ -83,6 +111,14 @@ public class StatusController {
         summary = "Update a status",
         description = "Update the specified status based on the request body"
     )
+    @ApiResponse(
+        responseCode = "201",
+        description = "The updated status",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = StatusResponse.class)
+        )
+    )  
     ResponseEntity<EntityModel<StatusResponse>> replaceStatus(@PathVariable Long id, @Valid @RequestBody StatusDTO dto) {
         StatusResponse updatedStatus = service.mapToResponse(service.updateStatus(id, dto));
         EntityModel<StatusResponse> entityModel = responseAssembler.toModel(updatedStatus);
@@ -97,6 +133,11 @@ public class StatusController {
         summary = "Delete a status",
         description = "Delete the specified console from the status"
     )
+    @ApiResponse(
+        responseCode = "204",
+        description = "No Content (successfully deleted)",
+        content = @Content()
+    )  
     ResponseEntity<EntityModel<StatusResponse>> deleteStatus(@PathVariable Long id) {
         service.deleteStatus(id);
 

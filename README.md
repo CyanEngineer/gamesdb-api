@@ -34,15 +34,16 @@ RESTful API for games I have played or want to play
   - ~~Basic implementation~~
   - ~~Validation~~
   - Check duplicates
+  - Give proper error when trying to delete console/status in use by a game
 - ~~RESTful~~
   - ~~HATEOAS~~
 - Pagination
 - Sorting
 - Filtering
 - Search (fuzzy?)
-- Documentation
+- ~~Documentation~~
   - ~~Swagger~~
-  - Implement more helpful documentation
+  - ~~Implement more helpful documentation~~
 ### Tests
 - ~~GameService~~
 - ~~ConsoleService~~

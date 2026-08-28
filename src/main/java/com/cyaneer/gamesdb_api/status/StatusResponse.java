@@ -1,5 +1,8 @@
 package com.cyaneer.gamesdb_api.status;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "StatusResponse", description = "A play-status that a game can have (e.g. \"Playing\", \"Done\" or \"To do\"")
 public class StatusResponse {
     
     private Long id;

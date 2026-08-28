@@ -1,5 +1,8 @@
 package com.cyaneer.gamesdb_api.game;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "GameResponse", description = "A single game and its data")
 public class GameResponse {
     
     private Long gameId;

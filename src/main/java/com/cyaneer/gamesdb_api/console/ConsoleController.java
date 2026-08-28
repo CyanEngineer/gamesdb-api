@@ -19,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -39,7 +43,15 @@ public class ConsoleController {
         summary = "Get all consoles",
         description = "Returns all consoles in the database"
     )
-    public ResponseEntity<CollectionModel<EntityModel<ConsoleResponse>>> all() {
+    @ApiResponse(
+        responseCode = "200",
+        description = "All consoles in the database",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = ConsoleResponse.class))
+        )
+    )   
+    ResponseEntity<CollectionModel<EntityModel<ConsoleResponse>>> all() {
         List<EntityModel<ConsoleResponse>> consoles = service.getAllConsoles().stream()
             .map(service::mapToResponse)
             .map(modelAssembler::toModel)
@@ -56,7 +68,15 @@ public class ConsoleController {
         summary = "Add a new console",
         description = "Create a new console based on the request body"
     )
-    public ResponseEntity<EntityModel<ConsoleResponse>> newConsole(@Valid @RequestBody ConsoleDTO dto) {
+    @ApiResponse(
+        responseCode = "201",
+        description = "The created console",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = ConsoleResponse.class))
+        )
+    )  
+    ResponseEntity<EntityModel<ConsoleResponse>> newConsole(@Valid @RequestBody ConsoleDTO dto) {
         Console console = service.createConsole(dto);
         EntityModel<ConsoleResponse> entityModel = modelAssembler.toModel(service.mapToResponse(console));
 
@@ -70,7 +90,15 @@ public class ConsoleController {
         summary = "Get one console",
         description = "Returns the specified console"
     )
-    public ResponseEntity<EntityModel<ConsoleResponse>> one(@PathVariable Long id) {
+    @ApiResponse(
+        responseCode = "200",
+        description = "The specified console",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = ConsoleResponse.class))
+        )
+    )  
+    ResponseEntity<EntityModel<ConsoleResponse>> one(@PathVariable Long id) {
         Console console = service.getConsole(id);
         EntityModel<ConsoleResponse> entityModel = modelAssembler.toModel(service.mapToResponse(console));
 
@@ -83,7 +111,15 @@ public class ConsoleController {
         summary = "Update a console",
         description = "Update the specified console based on the request body"
     )
-    public ResponseEntity<EntityModel<ConsoleResponse>> replaceConsole(@PathVariable Long id, @Valid @RequestBody ConsoleDTO dto) {
+    @ApiResponse(
+        responseCode = "201",
+        description = "The updated console",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = ConsoleResponse.class))
+        )
+    )  
+    ResponseEntity<EntityModel<ConsoleResponse>> replaceConsole(@PathVariable Long id, @Valid @RequestBody ConsoleDTO dto) {
         Console console = service.updateConsole(id, dto);
         EntityModel<ConsoleResponse> entityModel = modelAssembler.toModel(service.mapToResponse(console));
 
@@ -97,7 +133,12 @@ public class ConsoleController {
         summary = "Delete a console",
         description = "Delete the specified console from the database"
     )
-    public ResponseEntity<EntityModel<ConsoleResponse>> deleteConsole(@PathVariable Long id) {
+    @ApiResponse(
+        responseCode = "204",
+        description = "No Content (successfully deleted)",
+        content = @Content()
+    )  
+    ResponseEntity<EntityModel<ConsoleResponse>> deleteConsole(@PathVariable Long id) {
         service.deleteConsole(id);
 
         return ResponseEntity.noContent().build();

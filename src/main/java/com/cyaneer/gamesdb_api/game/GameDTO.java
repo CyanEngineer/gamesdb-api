@@ -1,21 +1,26 @@
 package com.cyaneer.gamesdb_api.game;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+@Schema(name = "Game", description = "A single game and its data")
 public class GameDTO {
     
     @NotBlank(message = "title is required")
     private String title;
 
+    @Schema(description = "The integer id of the status. Use \"GET /statuses\" above to see all options")
     @NotNull(message = "statusId is required")
     private Long statusId;
 
+    @Schema(description = "The integer id of the console. Use \"GET /consoles\" above to see all options")
     @NotNull(message = "consoleId is required")
     private Long consoleId;
 
+    @Schema(description = "Personal rating of the game between 0 and 10 (e.g. 7.5)")
     @DecimalMin(value = "0.0", message = "score must be at least 0")
     @DecimalMax(value = "10.0", message = "score must be at most 10")
     private Double score;

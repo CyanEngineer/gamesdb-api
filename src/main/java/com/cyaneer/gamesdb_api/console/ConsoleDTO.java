@@ -1,7 +1,9 @@
 package com.cyaneer.gamesdb_api.console;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
+@Schema(name = "Console", description = "The console where the game was played")
 public class ConsoleDTO {
     
     @NotBlank

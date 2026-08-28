@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -38,10 +42,16 @@ public class GameController {
         summary = "Get all games",
         description = "Returns all games in the database"
     )
+    @ApiResponse(
+        responseCode = "200",
+        description = "All games in the database",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = GameResponse.class))
+        )
+    )   
     ResponseEntity<CollectionModel<EntityModel<GameResponse>>> all() {
-        List<Game> games = service.getAllGames();
-
-        List<EntityModel<GameResponse>> entityModels = games.stream()
+        List<EntityModel<GameResponse>> entityModels = service.getAllGames().stream()
             .map(service::mapToResponse)
             .map(responseAssembler::toModel)
             .collect(Collectors.toList());
@@ -49,8 +59,7 @@ public class GameController {
         CollectionModel<EntityModel<GameResponse>> collectionModel = CollectionModel
             .of(entityModels, linkTo(methodOn(GameController.class).all()).withSelfRel());
 
-        return ResponseEntity
-            .ok(collectionModel);
+        return ResponseEntity.ok(collectionModel);
     }
 
     @PostMapping("/games")
@@ -58,6 +67,14 @@ public class GameController {
         summary = "Add a new game",
         description = "Create a new game based on the request body"
     )
+    @ApiResponse(
+        responseCode = "201",
+        description = "The created game",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = GameResponse.class))
+        )
+    )  
     ResponseEntity<EntityModel<GameResponse>> newGame(@Valid @RequestBody GameDTO dto) {
         GameResponse gameResponse = service.mapToResponse(service.createGame(dto));
         EntityModel<GameResponse> entityModel = responseAssembler.toModel(gameResponse);
@@ -72,6 +89,14 @@ public class GameController {
         summary = "Get one game",
         description = "Returns the specified game"
     )
+    @ApiResponse(
+        responseCode = "200",
+        description = "The specified game",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = GameResponse.class))
+        )
+    )  
     ResponseEntity<EntityModel<GameResponse>> one(@PathVariable Long id) {
         GameResponse gameResponse = service.mapToResponse(service.getGame(id));
         EntityModel<GameResponse> entityModel = responseAssembler.toModel(gameResponse);
@@ -85,6 +110,14 @@ public class GameController {
         summary = "Update a game",
         description = "Update the specified game based on the request body"
     )
+    @ApiResponse(
+        responseCode = "201",
+        description = "The updated game",
+        content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = GameResponse.class))
+        )
+    )  
     ResponseEntity<EntityModel<GameResponse>> replaceGame(@PathVariable Long id, @Valid @RequestBody GameDTO dto) {
         GameResponse updatedGame = service.mapToResponse(service.updateGame(id, dto));
         EntityModel<GameResponse> entityModel = responseAssembler.toModel(updatedGame);
@@ -99,6 +132,11 @@ public class GameController {
         summary = "Delete a game",
         description = "Delete the specified game from the database"
     )
+    @ApiResponse(
+        responseCode = "204",
+        description = "No Content (successfully deleted)",
+        content = @Content()
+    )  
     ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         service.deleteGame(id);
 
