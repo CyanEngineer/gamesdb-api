@@ -13,23 +13,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.cyaneer.gamesdb_api.common.ResourceInUseException;
 import com.cyaneer.gamesdb_api.console.Console;
 import com.cyaneer.gamesdb_api.console.ConsoleDTO;
 import com.cyaneer.gamesdb_api.console.ConsoleNotFoundException;
 import com.cyaneer.gamesdb_api.console.ConsoleRepository;
 import com.cyaneer.gamesdb_api.console.ConsoleService;
+import com.cyaneer.gamesdb_api.game.GameRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class ConsoleServiceTest {
 
     @Mock
     ConsoleRepository consoleRepository;
+    @Mock
+    GameRepository gameRepository;
 
     ConsoleService service;
 
     @BeforeEach
     void setUp() {
-        service = new ConsoleService(consoleRepository);
+        service = new ConsoleService(consoleRepository, gameRepository);
     }
     
     @Test
@@ -61,5 +65,12 @@ public class ConsoleServiceTest {
         when(consoleRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ConsoleNotFoundException.class, () -> service.getConsole(1L));
+    }
+
+    @Test
+    public void testDeleteConsoleWontDeleteInUseConsole() {
+        when(gameRepository.existsByConsoleId(anyLong())).thenReturn(true);
+
+        assertThrows(ResourceInUseException.class, () -> service.deleteConsole(1L));
     }
 }

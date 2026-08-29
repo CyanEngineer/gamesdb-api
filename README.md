@@ -34,7 +34,8 @@ RESTful API for games I have played or want to play
   - ~~Basic implementation~~
   - ~~Validation~~
   - Check duplicates
-  - Give proper error when trying to delete console/status in use by a game
+    - Need to decide if avoiding duplicates is a requirement (backend) or a suggestion (frontend)
+  - ~~Give proper error when trying to delete console/status in use by a game~~
 - ~~RESTful~~
   - ~~HATEOAS~~
 - Pagination

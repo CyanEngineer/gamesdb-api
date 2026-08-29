@@ -5,17 +5,22 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cyaneer.gamesdb_api.common.ResourceInUseException;
+import com.cyaneer.gamesdb_api.game.GameRepository;
+
 @Service
 public class ConsoleService {
     
-    private ConsoleRepository repository;
+    private ConsoleRepository consoleRepository;
+    private GameRepository gameRepository;
 
-    public ConsoleService(ConsoleRepository repository) {
-        this.repository = repository;
+    public ConsoleService(ConsoleRepository consoleRepository, GameRepository gameRepository) {
+        this.consoleRepository = consoleRepository;
+        this.gameRepository = gameRepository;
     }
 
     public List<Console> getAllConsoles() {
-        return repository.findAll();
+        return consoleRepository.findAll();
     }
 
     public Console getConsole(Long id) {
@@ -26,7 +31,7 @@ public class ConsoleService {
     public Console createConsole(ConsoleDTO dto) {
         Console console = new Console(dto.getName());
 
-        return repository.save(console);
+        return consoleRepository.save(console);
     }
 
     @Transactional
@@ -34,12 +39,15 @@ public class ConsoleService {
         Console console = findById(id);
         console.update(dto.getName());
 
-        return repository.save(console);
+        return consoleRepository.save(console);
     }
 
     @Transactional
     public void deleteConsole(Long id) {
-        repository.deleteById(id);
+        if (gameRepository.existsByConsoleId(id)) {
+            throw new ResourceInUseException("Console", id);
+        }
+        consoleRepository.deleteById(id);
     }
 
     public ConsoleResponse mapToResponse(Console console) {
@@ -50,7 +58,7 @@ public class ConsoleService {
     }
 
     private Console findById(Long id) {
-        return repository.findById(id)
+        return consoleRepository.findById(id)
             .orElseThrow(() -> new ConsoleNotFoundException(id));
     }
 }

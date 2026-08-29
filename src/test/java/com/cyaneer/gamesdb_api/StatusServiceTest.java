@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.cyaneer.gamesdb_api.common.ResourceInUseException;
+import com.cyaneer.gamesdb_api.game.GameRepository;
 import com.cyaneer.gamesdb_api.status.Status;
 import com.cyaneer.gamesdb_api.status.StatusDTO;
 import com.cyaneer.gamesdb_api.status.StatusNotFoundException;
@@ -24,12 +26,14 @@ public class StatusServiceTest {
 
     @Mock
     StatusRepository statusRepository;
+    @Mock
+    GameRepository gameRepository;
 
     StatusService service;
 
     @BeforeEach
     void setUp() {
-        service = new StatusService(statusRepository);
+        service = new StatusService(statusRepository, gameRepository);
     }
     
     @Test
@@ -61,5 +65,12 @@ public class StatusServiceTest {
         when(statusRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(StatusNotFoundException.class, () -> service.getStatus(1L));
+    }
+
+    @Test
+    public void testDeleteStatusWontDeleteInUseStatus() {
+        when(gameRepository.existsByStatusId(anyLong())).thenReturn(true);
+
+        assertThrows(ResourceInUseException.class, () -> service.deleteStatus(1L));
     }
 }

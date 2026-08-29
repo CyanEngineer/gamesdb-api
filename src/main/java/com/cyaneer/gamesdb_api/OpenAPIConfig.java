@@ -14,7 +14,7 @@ public class OpenAPIConfig {
         return new OpenAPI()
             .info(new Info()
                 .title("GamesDB API")
-                .version("1.3.2")
+                .version("1.3.3")
                 .description("RESTful API for games I have played or want to play")
             );
     }

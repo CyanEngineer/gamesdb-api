@@ -5,17 +5,22 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cyaneer.gamesdb_api.common.ResourceInUseException;
+import com.cyaneer.gamesdb_api.game.GameRepository;
+
 @Service
 public class StatusService {
     
-    private StatusRepository repository;
+    private StatusRepository statusRepository;
+    private GameRepository gameRepository;
 
-    public StatusService(StatusRepository repository) {
-        this.repository = repository;
+    public StatusService(StatusRepository statusRepository, GameRepository gameRepository) {
+        this.statusRepository = statusRepository;
+        this.gameRepository = gameRepository;
     }
 
     public List<Status> getAllStatuses() {
-        return repository.findAll();
+        return statusRepository.findAll();
     }
 
     public Status getStatus(Long id) {
@@ -26,7 +31,7 @@ public class StatusService {
     public Status createStatus(StatusDTO dto) {
         Status status = new Status(dto.getName());
 
-        return repository.save(status);
+        return statusRepository.save(status);
     }
 
     @Transactional
@@ -34,12 +39,15 @@ public class StatusService {
         Status status = findById(id);
         status.update(dto.getName());
 
-        return repository.save(status);
+        return statusRepository.save(status);
     }
 
     @Transactional
     public void deleteStatus(Long id) {
-        repository.deleteById(id);
+        if (gameRepository.existsByStatusId(id)) {
+            throw new ResourceInUseException("Status", id);
+        }
+        statusRepository.deleteById(id);
     }
 
     public StatusResponse mapToResponse(Status status) {
@@ -50,7 +58,7 @@ public class StatusService {
     }
 
     private Status findById(Long id) {
-        return repository.findById(id)
+        return statusRepository.findById(id)
             .orElseThrow(() -> new StatusNotFoundException(id));
     }
 }

@@ -59,4 +59,21 @@ public class ApiExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+
+    @ExceptionHandler(ResourceInUseException.class)
+    public ResponseEntity<ApiErrorResponse> handleInUse(
+        ResourceInUseException e,
+        HttpServletRequest request
+    ) {
+        ApiErrorResponse response = new ApiErrorResponse(
+            Instant.now(), 
+            HttpStatus.CONFLICT.value(), 
+            "Conflict", 
+            e.getMessage(), 
+            request.getRequestURI(), 
+            List.of(e.getMessage())
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
 }
