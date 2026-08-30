@@ -1,7 +1,7 @@
 package com.cyaneer.gamesdb_api.status;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +19,8 @@ public class StatusService {
         this.gameRepository = gameRepository;
     }
 
-    public List<Status> getAllStatuses() {
-        return statusRepository.findAll();
+    public Page<Status> getAllStatuses(Pageable pageable) {
+        return statusRepository.findAll(pageable);
     }
 
     public Status getStatus(Long id) {

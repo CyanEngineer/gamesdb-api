@@ -3,12 +3,13 @@ package com.cyaneer.gamesdb_api.console;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.hateoas.CollectionModel;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,10 +40,7 @@ public class ConsoleController {
     }
 
     @GetMapping("/consoles")
-    @Operation(
-        summary = "Get all consoles",
-        description = "Returns all consoles in the database"
-    )
+    @Operation(summary = "Get all consoles", description = "Returns all consoles in the database")
     @ApiResponse(
         responseCode = "200",
         description = "All consoles in the database",
@@ -51,16 +49,19 @@ public class ConsoleController {
             array = @ArraySchema(schema = @Schema(implementation = ConsoleResponse.class))
         )
     )   
-    ResponseEntity<CollectionModel<EntityModel<ConsoleResponse>>> all() {
-        List<EntityModel<ConsoleResponse>> consoles = service.getAllConsoles().stream()
-            .map(service::mapToResponse)
-            .map(modelAssembler::toModel)
-            .collect(Collectors.toList());
-        
-        CollectionModel<EntityModel<ConsoleResponse>> collectionModel = CollectionModel
-            .of(consoles, linkTo(methodOn(ConsoleController.class).all()).withSelfRel());
-        
-        return ResponseEntity.ok(collectionModel);
+    ResponseEntity<PagedModel<EntityModel<ConsoleResponse>>> all(@ParameterObject Pageable pageable) {
+        Page<Console> consoles = service.getAllConsoles(pageable);
+
+        PagedModel<EntityModel<ConsoleResponse>> pagedModel = PagedModel.of(
+            consoles.map(service::mapToResponse).map(modelAssembler::toModel).toList(),
+            new PageMetadata(
+                pageable.getPageSize(), 
+                consoles.getNumber(), 
+                consoles.getNumberOfElements()),
+            linkTo(methodOn(ConsoleController.class).all(pageable)).withSelfRel()
+        );
+
+        return ResponseEntity.ok(pagedModel);
     }
 
     @PostMapping("/consoles")

@@ -1,13 +1,14 @@
 package com.cyaneer.gamesdb_api.game;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
-import org.springframework.hateoas.CollectionModel;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,10 +39,7 @@ public class GameController {
     }
 
     @GetMapping("/games")
-    @Operation(
-        summary = "Get all games",
-        description = "Returns all games in the database"
-    )
+    @Operation(summary = "Get all games", description = "Returns all games in the database")
     @ApiResponse(
         responseCode = "200",
         description = "All games in the database",
@@ -50,16 +48,20 @@ public class GameController {
             array = @ArraySchema(schema = @Schema(implementation = GameResponse.class))
         )
     )   
-    ResponseEntity<CollectionModel<EntityModel<GameResponse>>> all() {
-        List<EntityModel<GameResponse>> entityModels = service.getAllGames().stream()
-            .map(service::mapToResponse)
-            .map(responseAssembler::toModel)
-            .collect(Collectors.toList());
+    ResponseEntity<PagedModel<EntityModel<GameResponse>>> all(@ParameterObject Pageable pageable) {
+        Page<Game> games = service.getAllGames(pageable);
+        
+        PagedModel<EntityModel<GameResponse>> pagedModel = PagedModel.of(
+            games.map(service::mapToResponse).map(responseAssembler::toModel).toList(),
+            new PagedModel.PageMetadata(
+                pageable.getPageSize(),
+                games.getNumber(),
+                games.getTotalElements()
+            ),
+            linkTo(methodOn(GameController.class).all(pageable)).withSelfRel()
+        );
 
-        CollectionModel<EntityModel<GameResponse>> collectionModel = CollectionModel
-            .of(entityModels, linkTo(methodOn(GameController.class).all()).withSelfRel());
-
-        return ResponseEntity.ok(collectionModel);
+        return ResponseEntity.ok(pagedModel);
     }
 
     @PostMapping("/games")

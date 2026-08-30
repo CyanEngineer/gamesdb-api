@@ -1,7 +1,7 @@
 package com.cyaneer.gamesdb_api.console;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +19,8 @@ public class ConsoleService {
         this.gameRepository = gameRepository;
     }
 
-    public List<Console> getAllConsoles() {
-        return consoleRepository.findAll();
+    public Page<Console> getAllConsoles(Pageable pageable) {
+        return consoleRepository.findAll(pageable);
     }
 
     public Console getConsole(Long id) {

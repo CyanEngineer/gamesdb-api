@@ -3,12 +3,13 @@ package com.cyaneer.gamesdb_api.status;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.hateoas.CollectionModel;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.PagedModel.PageMetadata;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,10 +40,7 @@ public class StatusController {
     }
 
     @GetMapping("/statuses")
-    @Operation(
-        summary = "Get all statuses",
-        description = "Returns all statuses in the database"
-    )
+    @Operation(summary = "Get all statuses", description = "Returns all statuses in the database")
     @ApiResponse(
         responseCode = "200",
         description = "All statuses in the database",
@@ -51,16 +49,19 @@ public class StatusController {
             array = @ArraySchema(schema = @Schema(implementation = StatusResponse.class))
         )
     )  
-    ResponseEntity<CollectionModel<EntityModel<StatusResponse>>> all() {
-        List<EntityModel<StatusResponse>> statuses = service.getAllStatuses().stream()
-            .map(service::mapToResponse)
-            .map(responseAssembler::toModel)
-            .collect(Collectors.toList());
+    ResponseEntity<PagedModel<EntityModel<StatusResponse>>> all(@ParameterObject Pageable pageable) {        
+        Page<Status> statuses = service.getAllStatuses(pageable);
+
+        PagedModel<EntityModel<StatusResponse>> pagedModel = PagedModel.of(
+            statuses.map(service::mapToResponse).map(responseAssembler::toModel).toList(),
+            new PageMetadata(
+                pageable.getPageSize(), 
+                statuses.getNumber(), 
+                statuses.getNumberOfElements()),
+            linkTo(methodOn(StatusController.class).all(pageable)).withSelfRel()
+        );
         
-        CollectionModel<EntityModel<StatusResponse>> collectionModel = CollectionModel
-            .of(statuses, linkTo(methodOn(StatusController.class).all()).withSelfRel());
-        
-        return ResponseEntity.ok(collectionModel);
+        return ResponseEntity.ok(pagedModel);
     }
 
     @PostMapping("/statuses")

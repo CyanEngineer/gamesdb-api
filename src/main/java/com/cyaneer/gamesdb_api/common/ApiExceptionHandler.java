@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -75,5 +76,22 @@ public class ApiExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidProperty(
+        PropertyReferenceException e,
+        HttpServletRequest request
+    ) {
+        ApiErrorResponse response = new ApiErrorResponse(
+            Instant.now(), 
+            HttpStatus.BAD_REQUEST.value(), 
+            "Bad Request", 
+            e.getMessage(), 
+            request.getRequestURI(), 
+            List.of(e.getMessage())
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }
